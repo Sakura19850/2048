@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>2048</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- 顶部标题区 -->
+    <header class="header">
+      <h1 class="title">2048</h1>
+      <div class="score-panel">
+        <div class="score-box">
+          <span class="score-label">分数</span>
+          <span class="score-value" id="score">0</span>
+        </div>
+        <button class="btn-new-game" id="btn-new-game">新游戏</button>
+      </div>
+    </header>
+
+    <!-- 游戏说明 -->
+    <p class="hint">使用 <strong>方向键</strong> 或 <strong>滑动屏幕</strong> 移动方块，相同数字合并相加。</p>
+
+    <!-- 游戏棋盘 -->
+    <div class="board-wrapper">
+      <div class="board" id="board">
+        <!-- 16 个背景格子 -->
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+        <!-- 动态方块层 -->
+        <div class="tile-layer" id="tile-layer"></div>
+      </div>
+
+      <!-- 覆盖层 -->
+      <div class="overlay hidden" id="overlay">
+        <div class="overlay-content">
+          <p class="overlay-message" id="overlay-message"></p>
+          <button class="btn-overlay" id="btn-overlay">再来一局</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
