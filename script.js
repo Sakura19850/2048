@@ -268,10 +268,31 @@ function handleKeyDown(e) {
   }
 }
 
-// ---------- 触屏输入 ----------
+// ---------- 触屏 / 鼠标输入 ----------
 let touchStartX = 0;
 let touchStartY = 0;
 let touchStarted = false;
+
+let mouseStartX = 0;
+let mouseStartY = 0;
+let mouseDragging = false;
+
+// 根据起始坐标和 delta 解析方向并执行移动
+function resolveDirection(startX, startY, endX, endY) {
+  const dx = endX - startX;
+  const dy = endY - startY;
+  const absDx = Math.abs(dx);
+  const absDy = Math.abs(dy);
+  const threshold = 30;
+
+  if (Math.max(absDx, absDy) < threshold) return; // 滑动距离不够
+
+  if (absDx > absDy) {
+    move(dx > 0 ? 'right' : 'left');
+  } else {
+    move(dy > 0 ? 'down' : 'up');
+  }
+}
 
 function handleTouchStart(e) {
   if (e.touches.length !== 1) return;
@@ -290,18 +311,30 @@ function handleTouchEnd(e) {
   touchStarted = false;
 
   const touch = e.changedTouches[0];
-  const dx = touch.clientX - touchStartX;
-  const dy = touch.clientY - touchStartY;
-  const absDx = Math.abs(dx);
-  const absDy = Math.abs(dy);
-  const threshold = 30;
+  resolveDirection(touchStartX, touchStartY, touch.clientX, touch.clientY);
+}
 
-  if (Math.max(absDx, absDy) < threshold) return; // 滑动距离不够
+// ---------- 鼠标拖拽 ----------
+function handleMouseDown(e) {
+  e.preventDefault();
+  mouseStartX = e.clientX;
+  mouseStartY = e.clientY;
+  mouseDragging = true;
+  boardEl.style.cursor = 'grabbing';
+}
 
-  if (absDx > absDy) {
-    move(dx > 0 ? 'right' : 'left');
-  } else {
-    move(dy > 0 ? 'down' : 'up');
+function handleMouseUp(e) {
+  if (!mouseDragging) return;
+  mouseDragging = false;
+  boardEl.style.cursor = 'grab';
+
+  resolveDirection(mouseStartX, mouseStartY, e.clientX, e.clientY);
+}
+
+function handleMouseLeave() {
+  if (mouseDragging) {
+    mouseDragging = false;
+    boardEl.style.cursor = 'grab';
   }
 }
 
@@ -310,6 +343,12 @@ document.addEventListener('keydown', handleKeyDown);
 boardEl.addEventListener('touchstart', handleTouchStart, { passive: false });
 boardEl.addEventListener('touchmove', handleTouchMove, { passive: false });
 boardEl.addEventListener('touchend', handleTouchEnd);
+boardEl.addEventListener('mousedown', handleMouseDown);
+window.addEventListener('mouseup', handleMouseUp);
+boardEl.addEventListener('mouseleave', handleMouseLeave);
+
+// 棋盘鼠标光标样式
+boardEl.style.cursor = 'grab';
 
 // 新游戏按钮
 btnNewGame.addEventListener('click', init);
